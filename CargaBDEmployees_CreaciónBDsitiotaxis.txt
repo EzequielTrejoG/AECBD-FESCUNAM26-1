@@ -1,0 +1,288 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. Todos los derechos reservados.
+
+Instale la versión más reciente de PowerShell para obtener nuevas características y mejoras. https://aka.ms/PSWindows
+
+PS C:\Users\USR241> ssh root@127.0.0.1 -p 2222
+The authenticity of host '[127.0.0.1]:2222 ([127.0.0.1]:2222)' can't be established.
+ED25519 key fingerprint is SHA256:HycuaV2H1FVD/ie+6aDoRPA8/F6kAdyByX6chuH1FeE.
+This host key is known by the following other names/addresses:
+    C:\Users\USR241/.ssh/known_hosts:4: 192.168.0.106
+    C:\Users\USR241/.ssh/known_hosts:7: 192.168.0.109
+    C:\Users\USR241/.ssh/known_hosts:8: 192.168.0.115
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '[127.0.0.1]:2222' (ED25519) to the list of known hosts.
+root@127.0.0.1's password:
+Web console: https://localhost:9090/ or https://10.0.2.15:9090/
+
+Last login: Wed Oct  8 15:05:19 2025
+root@localhost:~# systemctl start mariadb
+root@localhost:~# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 10.11.11-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE sitioTaxis;
+Query OK, 1 row affected (0.006 sec)
+
+MariaDB [(none)]> CREATE TABLE conductor(
+    ->     idConductor INT PRIMARY KEY NOT NULL,
+    ->     nombre VARCHAR(50) NOT NULL,
+    ->     apellidoP VARCHAR(50) NOT NULL,
+    ->     apellidoM VARCHAR(50),
+    ->     direccion VARCHAR(50) NOT NULL,
+    ->     fechaRegistro DATE NOT NULL,
+    ->     idLicencia INT NOT NULL,
+    ->     idMunicipio INT NOT NULL
+    -> );
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> USE sitioTaxis;
+Database changed
+MariaDB [sitioTaxis]> CREATE TABLE conductor(
+    ->     idConductor INT PRIMARY KEY NOT NULL,
+    ->     nombre VARCHAR(50) NOT NULL,
+    ->     apellidoP VARCHAR(50) NOT NULL,
+    ->     apellidoM VARCHAR(50),
+    ->     direccion VARCHAR(50) NOT NULL,
+    ->     fechaRegistro DATE NOT NULL,
+    ->     idLicencia INT NOT NULL,
+    ->     idMunicipio INT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.087 sec)
+
+MariaDB [sitioTaxis]> SHOW TABLES;
++----------------------+
+| Tables_in_sitioTaxis |
++----------------------+
+| conductor            |
++----------------------+
+1 row in set (0.002 sec)
+
+MariaDB [sitioTaxis]> CREATE TABLE telefono(
+    ->     idConductor INT NOT NULL,
+    ->     numero VARCHAR(13) NOT NULL,
+    ->     tipo VARCHAR(15) NOT NULL,
+    ->     CONSTRAINT fk_telefono_conductor
+    ->         FOREIGN KEY (idConductor) REFERENCES conductor (idConductor)
+    -> );
+Query OK, 0 rows affected (0.084 sec)
+
+MariaDB [sitioTaxis]> DESCRIBE conductor;
++---------------+-------------+------+-----+---------+-------+
+| Field         | Type        | Null | Key | Default | Extra |
++---------------+-------------+------+-----+---------+-------+
+| idConductor   | int(11)     | NO   | PRI | NULL    |       |
+| nombre        | varchar(50) | NO   |     | NULL    |       |
+| apellidoP     | varchar(50) | NO   |     | NULL    |       |
+| apellidoM     | varchar(50) | YES  |     | NULL    |       |
+| direccion     | varchar(50) | NO   |     | NULL    |       |
+| fechaRegistro | date        | NO   |     | NULL    |       |
+| idLicencia    | int(11)     | NO   |     | NULL    |       |
+| idMunicipio   | int(11)     | NO   |     | NULL    |       |
++---------------+-------------+------+-----+---------+-------+
+8 rows in set (0.011 sec)
+
+MariaDB [sitioTaxis]> DESCRIBE telefono;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| idConductor | int(11)     | NO   | MUL | NULL    |       |
+| numero      | varchar(13) | NO   |     | NULL    |       |
+| tipo        | varchar(15) | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.008 sec)
+
+MariaDB [sitioTaxis]> exit
+Bye
+root@localhost:~# ls
+anaconda-ks.cfg                employees.sql  sakila-db         test_employees_md5.sql  wget-log.1
+employees_partitioned_5.1.sql  master.zip     sakila-db.zip     test_employees_sha.sql  world-db
+employees_partitioned.sql      objects.sql    show_elapsed.sql  wget-log                world-db.zip
+root@localhost:~# wget -c https://github.com/datacharmer/test_db/archive/refs/heads/master.zip
+--2025-10-08 15:34:43--  https://github.com/datacharmer/test_db/archive/refs/heads/master.zip
+Resolviendo github.com (github.com)... 140.82.114.4
+Conectando con github.com (github.com)[140.82.114.4]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 302 Found
+Localización: https://codeload.github.com/datacharmer/test_db/zip/refs/heads/master [siguiendo]
+--2025-10-08 15:34:45--  https://codeload.github.com/datacharmer/test_db/zip/refs/heads/master
+Resolviendo codeload.github.com (codeload.github.com)... 140.82.114.10
+Conectando con codeload.github.com (codeload.github.com)[140.82.114.10]:443... conectado.
+Petición HTTP enviada, esperando respuesta... 200 OK
+Longitud: no especificado [application/zip]
+Grabando a: «master.zip»
+
+master.zip                          [                         <=>                         ]  34.99M   124KB/s    en 7m 0s
+
+2025-10-08 15:41:48 (85.3 KB/s) - «master.zip» guardado [36688498]
+
+root@localhost:~# ls
+anaconda-ks.cfg                employees.sql  sakila-db         test_employees_md5.sql  wget-log.1
+employees_partitioned_5.1.sql  master.zip     sakila-db.zip     test_employees_sha.sql  world-db
+employees_partitioned.sql      objects.sql    show_elapsed.sql  wget-log                world-db.zip
+root@localhost:~# unzip master.zip
+Archive:  master.zip
+3c7fa05e04b4c339d91a43b7029a210212d48e6c
+   creating: test_db-master/
+  inflating: test_db-master/Changelog
+  inflating: test_db-master/README.md
+  inflating: test_db-master/employees.sql
+  inflating: test_db-master/employees_partitioned.sql
+  inflating: test_db-master/employees_partitioned_5.1.sql
+   creating: test_db-master/images/
+  inflating: test_db-master/images/employees.gif
+  inflating: test_db-master/images/employees.jpg
+  inflating: test_db-master/images/employees.png
+  inflating: test_db-master/load_departments.dump
+  inflating: test_db-master/load_dept_emp.dump
+  inflating: test_db-master/load_dept_manager.dump
+  inflating: test_db-master/load_employees.dump
+  inflating: test_db-master/load_salaries1.dump
+  inflating: test_db-master/load_salaries2.dump
+  inflating: test_db-master/load_salaries3.dump
+  inflating: test_db-master/load_titles.dump
+  inflating: test_db-master/objects.sql
+   creating: test_db-master/sakila/
+  inflating: test_db-master/sakila/README.md
+  inflating: test_db-master/sakila/sakila-mv-data.sql
+  inflating: test_db-master/sakila/sakila-mv-schema.sql
+  inflating: test_db-master/show_elapsed.sql
+  inflating: test_db-master/sql_test.sh
+  inflating: test_db-master/test_employees_md5.sql
+  inflating: test_db-master/test_employees_sha.sql
+  inflating: test_db-master/test_versions.sh
+root@localhost:~# cd test_db-master
+root@localhost:~/test_db-master# mysql -t <employees.sql
++-----------------------------+
+| INFO                        |
++-----------------------------+
+| CREATING DATABASE STRUCTURE |
++-----------------------------+
++------------------------+
+| INFO                   |
++------------------------+
+| storage engine: InnoDB |
++------------------------+
++---------------------+
+| INFO                |
++---------------------+
+| LOADING departments |
++---------------------+
++-------------------+
+| INFO              |
++-------------------+
+| LOADING employees |
++-------------------+
++------------------+
+| INFO             |
++------------------+
+| LOADING dept_emp |
++------------------+
++----------------------+
+| INFO                 |
++----------------------+
+| LOADING dept_manager |
++----------------------+
++----------------+
+| INFO           |
++----------------+
+| LOADING titles |
++----------------+
++------------------+
+| INFO             |
++------------------+
+| LOADING salaries |
++------------------+
++---------------------+
+| data_load_time_diff |
++---------------------+
+| 00:01:08            |
++---------------------+
+root@localhost:~/test_db-master# mysql -u root
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 5
+Server version: 10.11.11-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| ejemplo            |
+| employees          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sitioTaxis         |
+| sys                |
+| viajes             |
+| world              |
++--------------------+
+10 rows in set (0.002 sec)
+
+MariaDB [(none)]> USE employees;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [employees]> SHOW TABLES;
++----------------------+
+| Tables_in_employees  |
++----------------------+
+| current_dept_emp     |
+| departments          |
+| dept_emp             |
+| dept_emp_latest_date |
+| dept_manager         |
+| employees            |
+| salaries             |
+| titles               |
++----------------------+
+8 rows in set (0.001 sec)
+
+MariaDB [employees]> DESCRIBE employees;
++------------+---------------+------+-----+---------+-------+
+| Field      | Type          | Null | Key | Default | Extra |
++------------+---------------+------+-----+---------+-------+
+| emp_no     | int(11)       | NO   | PRI | NULL    |       |
+| birth_date | date          | NO   |     | NULL    |       |
+| first_name | varchar(14)   | NO   |     | NULL    |       |
+| last_name  | varchar(16)   | NO   |     | NULL    |       |
+| gender     | enum('M','F') | NO   |     | NULL    |       |
+| hire_date  | date          | NO   |     | NULL    |       |
++------------+---------------+------+-----+---------+-------+
+6 rows in set (0.010 sec)
+
+MariaDB [employees]> DESCRIBE salaries;
++-----------+---------+------+-----+---------+-------+
+| Field     | Type    | Null | Key | Default | Extra |
++-----------+---------+------+-----+---------+-------+
+| emp_no    | int(11) | NO   | PRI | NULL    |       |
+| salary    | int(11) | NO   |     | NULL    |       |
+| from_date | date    | NO   | PRI | NULL    |       |
+| to_date   | date    | NO   |     | NULL    |       |
++-----------+---------+------+-----+---------+-------+
+4 rows in set (0.003 sec)
+
+MariaDB [employees]> DESCRIBE titles;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| emp_no    | int(11)     | NO   | PRI | NULL    |       |
+| title     | varchar(50) | NO   | PRI | NULL    |       |
+| from_date | date        | NO   | PRI | NULL    |       |
+| to_date   | date        | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.001 sec)
+
+MariaDB [employees]> exit
+Bye
+root@localhost:~/test_db-master#
