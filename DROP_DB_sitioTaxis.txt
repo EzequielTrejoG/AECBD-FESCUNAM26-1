@@ -1,0 +1,208 @@
+Microsoft Windows [Versión 10.0.26200.6725]
+(c) Microsoft Corporation. Todos los derechos reservados.
+
+C:\Users\USR241>ssh root@127.0.0.1 -p 2222
+root@127.0.0.1's password:
+Web console: https://localhost:9090/ or https://10.0.2.15:9090/
+
+Last login: Mon Oct 13 17:24:22 2025 from 10.0.2.2
+root@localhost:~# systemctl start mariadb
+root@localhost:~# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 9
+Server version: 10.11.11-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| ejemplo            |
+| employees          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sitioTaxis         |
+| sitioTaxisDos      |
+| sys                |
+| taxis              |
+| viajes             |
+| world              |
++--------------------+
+12 rows in set (0.002 sec)
+
+MariaDB [(none)]> USE sitioTaxisDos;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [sitioTaxisDos]> SHOW TABLES;
++-------------------------+
+| Tables_in_sitioTaxisDos |
++-------------------------+
+| asentamiento            |
+| asignacion              |
+| conductor               |
+| estado                  |
+| licencia                |
+| municipio               |
+| taxi                    |
+| telefono                |
+| tipoLicencia            |
+| viaje                   |
++-------------------------+
+10 rows in set (0.002 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE telefono
+    -> DROP FOREIGN KEY fk_telefono_conductor;
+Query OK, 0 rows affected (0.040 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> ALTER TABLE telefono
+    -> DROP INDEX fk_telefono_conductor;
+Query OK, 0 rows affected (0.042 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE telefono;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| idTelefono  | int(11)     | NO   | PRI | NULL    |       |
+| idConductor | int(11)     | NO   |     | NULL    |       |
+| numero      | varchar(13) | NO   |     | NULL    |       |
+| tipo        | varchar(15) | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+4 rows in set (0.004 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE licencia
+    -> DROP FOREIGN KEY fk_licencia_conductor;
+Query OK, 0 rows affected (0.042 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> ALTER TABLE licencia
+    -> DROP INDEX fk_licencia_conductor;
+Query OK, 0 rows affected (0.043 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE licencia;
++------------------+---------------------------+------+-----+---------+-------+
+| Field            | Type                      | Null | Key | Default | Extra |
++------------------+---------------------------+------+-----+---------+-------+
+| idLicencia       | int(11)                   | NO   | PRI | NULL    |       |
+| numeroLicencia   | varchar(20)               | NO   |     | NULL    |       |
+| idTipo           | int(11)                   | NO   | MUL | NULL    |       |
+| fechaExpedicion  | date                      | NO   |     | NULL    |       |
+| fechaVencimiento | date                      | NO   |     | NULL    |       |
+| estado           | enum('Vigente','Vencida') | YES  |     | Vigente |       |
+| idConductor      | int(11)                   | NO   |     | NULL    |       |
++------------------+---------------------------+------+-----+---------+-------+
+7 rows in set (0.003 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE asignacion
+    -> DROP FOREIGN KEY fk_asignacion_conductor;
+Query OK, 0 rows affected (0.038 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> ALTER TABLE asignacion
+    -> DROP INDEX fk_asignacion_conductor;
+Query OK, 0 rows affected (0.035 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE asignacion;
++-----------------+------------+------+-----+-----------+-------+
+| Field           | Type       | Null | Key | Default   | Extra |
++-----------------+------------+------+-----+-----------+-------+
+| idAsignacion    | int(11)    | NO   | PRI | NULL      |       |
+| idTaxi          | int(11)    | NO   | MUL | NULL      |       |
+| idConductor     | int(11)    | NO   |     | NULL      |       |
+| fechaAsignacion | date       | YES  |     | curdate() |       |
+| activo          | tinyint(1) | NO   |     | 1         |       |
++-----------------+------------+------+-----+-----------+-------+
+5 rows in set (0.002 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE conductor
+    -> DROP PRIMARY KEY;
+Query OK, 0 rows affected (0.060 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE conductor;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| idConductor    | int(11)     | NO   |     | NULL    |       |
+| nombre         | varchar(50) | NO   |     | NULL    |       |
+| apellidoP      | varchar(50) | NO   |     | NULL    |       |
+| apellidoM      | varchar(50) | YES  |     | NULL    |       |
+| direccion      | varchar(50) | NO   |     | NULL    |       |
+| fechaRegistro  | date        | NO   |     | NULL    |       |
+| idAsentamiento | int(11)     | NO   | MUL | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+7 rows in set (0.012 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE conductor
+    -> DROP FOREIGN KEY fk_conductor_asentamiento;
+Query OK, 0 rows affected (0.043 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> ALTER TABLE conductor
+    -> DROP INDEX fk_conductor_asentamiento;
+Query OK, 0 rows affected (0.045 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE conductor;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| idConductor    | int(11)     | NO   |     | NULL    |       |
+| nombre         | varchar(50) | NO   |     | NULL    |       |
+| apellidoP      | varchar(50) | NO   |     | NULL    |       |
+| apellidoM      | varchar(50) | YES  |     | NULL    |       |
+| direccion      | varchar(50) | NO   |     | NULL    |       |
+| fechaRegistro  | date        | NO   |     | NULL    |       |
+| idAsentamiento | int(11)     | NO   |     | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+7 rows in set (0.008 sec)
+
+MariaDB [sitioTaxisDos]> ALTER TABLE conductor
+    -> DROP COLUMN fechaRegistro,
+    -> DROP COLUMN idAsentamiento;
+Query OK, 0 rows affected (0.060 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [sitioTaxisDos]> DESCRIBE conductor;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| idConductor | int(11)     | NO   |     | NULL    |       |
+| nombre      | varchar(50) | NO   |     | NULL    |       |
+| apellidoP   | varchar(50) | NO   |     | NULL    |       |
+| apellidoM   | varchar(50) | YES  |     | NULL    |       |
+| direccion   | varchar(50) | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.005 sec)
+
+MariaDB [sitioTaxisDos]> DROP TABLE licencia;
+Query OK, 0 rows affected (0.025 sec)
+
+MariaDB [sitioTaxisDos]> SHOW TABLES;
++-------------------------+
+| Tables_in_sitioTaxisDos |
++-------------------------+
+| asentamiento            |
+| asignacion              |
+| conductor               |
+| estado                  |
+| municipio               |
+| taxi                    |
+| telefono                |
+| tipoLicencia            |
+| viaje                   |
++-------------------------+
+9 rows in set (0.002 sec)
+
+MariaDB [sitioTaxisDos]>
